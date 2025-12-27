@@ -1,0 +1,125 @@
+
+import { LinkItem } from "../types";
+import { supabase } from "./supabaseClient";
+
+const COLLECTION = 'links';
+const isSupabaseConfigured = !!import.meta.env.VITE_SUPABASE_URL && !!import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+// --- LOCAL STORAGE FALLBACK LOGIC ---
+const getLocalLinks = (userId: string): LinkItem[] => {
+  const data = localStorage.getItem(`linkshelf_data_${userId}`);
+  return data ? JSON.parse(data) : [];
+};
+
+const saveLocalLinks = (userId: string, links: LinkItem[]) => {
+  localStorage.setItem(`linkshelf_data_${userId}`, JSON.stringify(links));
+};
+
+// --- REMOTE STORAGE LOGIC ---
+
+// Real-time subscription to links
+export const subscribeToLinks = (userId: string, callback: (links: LinkItem[]) => void) => {
+  if (!isSupabaseConfigured) {
+    callback(getLocalLinks(userId));
+    return () => { };
+  }
+
+  // Initial fetch
+  const fetchLinks = async () => {
+    const { data, error } = await supabase
+      .from(COLLECTION)
+      .select('*')
+      .eq('user_id', userId)
+      .order('createdAt', { ascending: false });
+
+    if (error) {
+      console.error("Supabase fetch error:", error);
+      callback(getLocalLinks(userId));
+    } else {
+      callback(data as LinkItem[]);
+    }
+  };
+
+  fetchLinks();
+
+  // Set up realtime listener
+  const channel = supabase
+    .channel(`links_${userId}`)
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: COLLECTION,
+        filter: `user_id=eq.${userId}`
+      },
+      () => {
+        // Simple approach: re-fetch on any change
+        fetchLinks();
+      }
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
+};
+
+export const addLinkRemote = async (userId: string, link: Omit<LinkItem, 'id'>) => {
+  if (!isSupabaseConfigured) {
+    const links = getLocalLinks(userId);
+    const newLink = { ...link, id: Math.random().toString(36).substr(2, 9) };
+    saveLocalLinks(userId, [newLink, ...links] as LinkItem[]);
+    return newLink.id;
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from(COLLECTION)
+      .insert([{
+        ...link,
+        user_id: userId
+      }])
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data.id;
+  } catch (e) {
+    console.error("Error adding document to Supabase: ", e);
+  }
+};
+
+export const updateLinkRemote = async (userId: string, linkId: string, updates: Partial<LinkItem>) => {
+  if (!isSupabaseConfigured) {
+    const links = getLocalLinks(userId);
+    const updated = links.map(l => l.id === linkId ? { ...l, ...updates } : l);
+    saveLocalLinks(userId, updated);
+    return;
+  }
+
+  const { error } = await supabase
+    .from(COLLECTION)
+    .update(updates)
+    .eq('id', linkId)
+    .eq('user_id', userId);
+
+  if (error) console.error("Update failed", error);
+};
+
+export const deleteLinkRemote = async (userId: string, linkId: string) => {
+  if (!isSupabaseConfigured) {
+    const links = getLocalLinks(userId);
+    const filtered = links.filter(l => l.id !== linkId);
+    saveLocalLinks(userId, filtered);
+    return;
+  }
+
+  const { error } = await supabase
+    .from(COLLECTION)
+    .delete()
+    .eq('id', linkId)
+    .eq('user_id', userId);
+
+  if (error) console.error("Delete failed", error);
+};

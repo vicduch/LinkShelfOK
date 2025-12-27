@@ -1,0 +1,491 @@
+:root {
+    /* Obsidian Luxe Design System - Premium "Pro" Aesthetic */
+    --bg-main: #0a0a0b;
+    --bg-secondary: #0e0e10;
+    --bg-surface: #141417;
+    --bg-card: rgba(26, 26, 29, 0.4);
+    --bg-glass: rgba(13, 13, 15, 0.8);
+
+    /* Borders - Extremely subtle, "hairline" feel */
+    --border: rgba(255, 255, 255, 0.04);
+    --border-strong: rgba(255, 255, 255, 0.08);
+    --border-hover: rgba(255, 255, 255, 0.12);
+
+    /* Neutral Palette - Avoiding harsh saturations */
+    --text-primary: #f5f5f7;
+    /* Apple San Francisco White */
+    --text-secondary: #a1a1aa;
+    /* Muted Zinc */
+    --text-tertiary: #636366;
+    /* Dark Zinc */
+
+    /* Muted Accent - "Titanium" style */
+    --accent-primary: #f5f5f7;
+    --accent-soft: rgba(245, 245, 247, 0.1);
+    --accent-blue: #0066cc;
+    /* Sophisticated deep blue, only for interactions */
+
+    /* Status Colors - Lowered saturation for a more professional look */
+    --status-success: #10b981;
+    --status-warning: #d97706;
+    /* Muted amber, not orange */
+    --status-danger: #ef4444;
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 18px;
+    --radius-xl: 32px;
+    --radius-full: 9999px;
+
+    --font-sans: 'Inter', -apple-system, system-ui, sans-serif;
+    --transition-luxe: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-main);
+    background-image:
+        radial-gradient(at 0% 0%, rgba(255, 255, 255, 0.02) 0%, transparent 40%),
+        radial-gradient(at 100% 100%, rgba(255, 255, 255, 0.01) 0%, transparent 40%);
+    background-attachment: fixed;
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+}
+
+/* Custom Scrollbar - Minimal iOS style */
+::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Base Elements */
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: opacity 0.2s ease;
+}
+
+a:hover {
+    opacity: 0.8;
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+/* Design Tokens */
+.glass-panel {
+    background: var(--bg-glass);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 0.5px solid var(--border-strong);
+}
+
+.glass-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 0.5px solid var(--border);
+    transition: var(--transition-luxe);
+}
+
+.glass-card:hover {
+    background: rgba(40, 40, 45, 0.5);
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.8);
+}
+
+/* Navigation Items */
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    transition: var(--transition-luxe);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.nav-item:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.nav-item.active {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Add Link Button - High contrast but refined */
+.btn-primary-luxe {
+    background: var(--text-primary);
+    color: var(--bg-main);
+    padding: 12px 24px;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: var(--transition-luxe);
+}
+
+.btn-primary-luxe:hover {
+    transform: scale(1.02);
+    filter: brightness(1.1);
+    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.1);
+}
+
+.btn-primary-luxe:active {
+    transform: scale(0.98);
+}
+
+/* Search Bar Polish */
+.search-container {
+    background: rgba(255, 255, 255, 0.03);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-full);
+    padding: 8px 16px;
+    transition: var(--transition-luxe);
+}
+
+.search-container:focus-within {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--border-strong);
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.02);
+}
+
+/* Empty State / Message Polish */
+.empty-state-icon {
+    color: var(--text-tertiary);
+    opacity: 0.5;
+}
+
+/* Animations */
+@keyframes luxeFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-luxe-fade {
+    animation: luxeFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Backfill common utilities needed by React components */
+.flex {
+    display: flex;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.flex-1 {
+    flex: 1 1 0%;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.gap-1 {
+    gap: 0.25rem;
+}
+
+.gap-2 {
+    gap: 0.5rem;
+}
+
+.gap-3 {
+    gap: 0.75rem;
+}
+
+.gap-4 {
+    gap: 1rem;
+}
+
+.gap-6 {
+    gap: 1.5rem;
+}
+
+.gap-8 {
+    gap: 2rem;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.h-full {
+    height: 100%;
+}
+
+.h-screen {
+    height: 100vh;
+}
+
+.min-h-screen {
+    min-height: 100vh;
+}
+
+.p-2 {
+    padding: 0.5rem;
+}
+
+.p-4 {
+    padding: 1rem;
+}
+
+.p-6 {
+    padding: 1.5rem;
+}
+
+.p-8 {
+    padding: 2rem;
+}
+
+.px-2 {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+.px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.py-3 {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+
+.pt-8 {
+    padding-top: 2rem;
+}
+
+.pb-6 {
+    padding-bottom: 1.5rem;
+}
+
+.mb-1 {
+    margin-bottom: 0.25rem;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+.mb-6 {
+    margin-bottom: 1.5rem;
+}
+
+.mb-8 {
+    margin-bottom: 2rem;
+}
+
+.mb-10 {
+    margin-bottom: 2.5rem;
+}
+
+.mt-auto {
+    margin-top: auto;
+}
+
+.text-xs {
+    font-size: 0.75rem;
+}
+
+.text-sm {
+    font-size: 0.875rem;
+}
+
+.text-lg {
+    font-size: 1.125rem;
+}
+
+.text-xl {
+    font-size: 1.25rem;
+}
+
+.text-2xl {
+    font-size: 1.5rem;
+}
+
+.font-bold {
+    font-weight: 700;
+}
+
+.font-semibold {
+    font-weight: 600;
+}
+
+.font-medium {
+    font-weight: 500;
+}
+
+.rounded-full {
+    border-radius: 9999px;
+}
+
+.rounded-md {
+    border-radius: var(--radius-md);
+}
+
+.rounded-lg {
+    border-radius: var(--radius-lg);
+}
+
+.rounded-xl {
+    border-radius: var(--radius-xl);
+}
+
+.bg-white\/5 {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.bg-white\/10 {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.border-b {
+    border-bottom: 0.5px solid var(--border);
+}
+
+.border-r {
+    border-right: 0.5px solid var(--border);
+}
+
+.hidden {
+    display: none;
+}
+
+.md\:flex {
+    display: flex;
+}
+
+.md\:hidden {
+    display: none;
+}
+
+.md\:block {
+    display: block;
+}
+
+.sticky {
+    position: sticky;
+}
+
+.top-0 {
+    top: 0;
+}
+
+.z-50 {
+    z-index: 50;
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: .5;
+    }
+}
+
+.truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.opacity-60 {
+    opacity: 0.6;
+}
+
+.grayscale {
+    filter: grayscale(1);
+}
+
+/* Animation Overrides for existing components */
+.animate-fade-in {
+    animation: luxeFadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

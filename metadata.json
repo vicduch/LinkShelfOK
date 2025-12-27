@@ -1,0 +1,5 @@
+{
+  "name": "LinkShelf - AI-Powered Read Later",
+  "description": "A sophisticated link management application that automatically categorizes and summarizes your saved URLs using Gemini AI. Features a seamless mobile 'Quick Add' workflow via query parameters, perfect for iOS Shortcuts.",
+  "requestFramePermissions": []
+}
