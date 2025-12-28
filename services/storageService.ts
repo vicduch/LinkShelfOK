@@ -20,7 +20,6 @@ const saveLocalLinks = (userId: string, links: LinkItem[]) => {
 // Helper to map DB row (snake_case) to LinkItem (camelCase)
 const mapRowToLinkItem = (row: any): LinkItem => ({
   id: row.id,
-  user_id: row.user_id,
   url: row.url,
   title: row.title,
   summary: row.summary,
