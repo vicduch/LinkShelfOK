@@ -74,16 +74,26 @@ export const addLinkRemote = async (userId: string, link: Omit<LinkItem, 'id'>) 
   }
 
   try {
+    // Explicit mapping to match the SQL schema exactly (handling case sensitivity)
     const { data, error } = await supabase
       .from(COLLECTION)
       .insert([{
-        ...link,
-        user_id: userId
+        user_id: userId,
+        url: link.url,
+        title: link.title,
+        summary: link.summary,
+        category: link.category,
+        tags: link.tags,
+        isRead: link.isRead,
+        createdAt: link.createdAt
       }])
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error("Supabase Insert Error:", error);
+      throw new Error(error.message);
+    }
     return data.id;
   } catch (e) {
     console.error("Error adding document to Supabase: ", e);
@@ -99,13 +109,24 @@ export const updateLinkRemote = async (userId: string, linkId: string, updates: 
     return;
   }
 
+  // Map updates if they use camelCase but DB expects exact match
+  const dbUpdates: any = {};
+  if (updates.isRead !== undefined) dbUpdates.isRead = updates.isRead;
+  if (updates.title) dbUpdates.title = updates.title;
+  if (updates.summary) dbUpdates.summary = updates.summary;
+  if (updates.category) dbUpdates.category = updates.category;
+  if (updates.tags) dbUpdates.tags = updates.tags;
+
   const { error } = await supabase
     .from(COLLECTION)
-    .update(updates)
+    .update(dbUpdates)
     .eq('id', linkId)
     .eq('user_id', userId);
 
-  if (error) console.error("Update failed", error);
+  if (error) {
+    console.error("Update failed", error);
+    throw error;
+  }
 };
 
 export const deleteLinkRemote = async (userId: string, linkId: string) => {
