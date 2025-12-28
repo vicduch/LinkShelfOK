@@ -24,6 +24,7 @@ const AppContent: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isExplorerOpen, setIsExplorerOpen] = useState(false);
+  const [sharedUrl, setSharedUrl] = useState<string | null>(null);
 
   // Confirmation Modal State
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -39,6 +40,20 @@ const AppContent: React.FC = () => {
   useEffect(() => {
     // Force basic theme attribute
     document.body.setAttribute('data-theme', 'zenith');
+
+    // Handle PWA Share Target
+    const params = new URLSearchParams(window.location.search);
+    const urlFromShare = params.get('url') || params.get('text');
+    if (urlFromShare) {
+      // Extract URL if text contains it
+      const urlMatch = urlFromShare.match(/https?:\/\/[^\s]+/);
+      if (urlMatch) {
+        setSharedUrl(urlMatch[0]);
+        setIsModalOpen(true);
+      }
+      // Clean URL
+      window.history.replaceState({}, document.title, '/');
+    }
   }, []);
 
   useEffect(() => {
@@ -203,23 +218,27 @@ const AppContent: React.FC = () => {
 
   const mobileNav = (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[var(--bg-main)]/95 backdrop-blur-xl border-t border-[var(--border)] pb-safe shadow-[0_-5px_20px_rgba(0,0,0,0.3)]">
-      <div className="grid grid-cols-5 h-16 items-center">
-        <button onClick={() => switchFilter(FilterType.UNREAD)} className={`flex flex-col items-center justify-center gap-1 h-full ${activeFilter === FilterType.UNREAD ? 'text-[var(--accent-primary)]' : 'text-[var(--text-secondary)]'}`}>
-          <Inbox size={20} strokeWidth={activeFilter === FilterType.UNREAD ? 2.5 : 2} />
+      <div className="grid grid-cols-5 h-20 items-center">
+        <button onClick={() => switchFilter(FilterType.UNREAD)} className={`nav-touch flex flex-col items-center justify-center gap-1 h-full ${activeFilter === FilterType.UNREAD ? 'text-[var(--accent-primary)]' : 'text-[var(--text-tertiary)]'}`}>
+          <Inbox size={22} strokeWidth={activeFilter === FilterType.UNREAD ? 2.5 : 1.5} />
+          <span className="text-[10px] font-medium">À lire</span>
         </button>
-        <button onClick={() => switchFilter(FilterType.SOURCE)} className={`flex flex-col items-center justify-center gap-1 h-full ${activeFilter === FilterType.SOURCE ? 'text-[var(--accent-primary)]' : 'text-[var(--text-secondary)]'}`}>
-          <Globe size={20} strokeWidth={activeFilter === FilterType.SOURCE ? 2.5 : 2} />
+        <button onClick={() => switchFilter(FilterType.SOURCE)} className={`nav-touch flex flex-col items-center justify-center gap-1 h-full ${activeFilter === FilterType.SOURCE ? 'text-[var(--accent-primary)]' : 'text-[var(--text-tertiary)]'}`}>
+          <Globe size={22} strokeWidth={activeFilter === FilterType.SOURCE ? 2.5 : 1.5} />
+          <span className="text-[10px] font-medium">Sources</span>
         </button>
-        <div className="flex items-center justify-center -mt-8">
+        <div className="flex items-center justify-center -mt-6">
           <button onClick={() => setIsModalOpen(true)} className="w-14 h-14 rounded-full bg-[var(--text-primary)] text-[var(--bg-main)] flex items-center justify-center transition-transform active:scale-95 shadow-xl shadow-white/10">
-            <Plus size={24} />
+            <Plus size={26} strokeWidth={2.5} />
           </button>
         </div>
-        <button onClick={() => switchFilter(FilterType.CATEGORY)} className={`flex flex-col items-center justify-center gap-1 h-full ${activeFilter === FilterType.CATEGORY ? 'text-[var(--accent-primary)]' : 'text-[var(--text-secondary)]'}`}>
-          <Layers size={20} strokeWidth={activeFilter === FilterType.CATEGORY ? 2.5 : 2} />
+        <button onClick={() => switchFilter(FilterType.CATEGORY)} className={`nav-touch flex flex-col items-center justify-center gap-1 h-full ${activeFilter === FilterType.CATEGORY ? 'text-[var(--accent-primary)]' : 'text-[var(--text-tertiary)]'}`}>
+          <Layers size={22} strokeWidth={activeFilter === FilterType.CATEGORY ? 2.5 : 1.5} />
+          <span className="text-[10px] font-medium">Catégories</span>
         </button>
-        <button onClick={() => switchFilter(FilterType.READ)} className={`flex flex-col items-center justify-center gap-1 h-full ${activeFilter === FilterType.READ ? 'text-[var(--accent-primary)]' : 'text-[var(--text-secondary)]'}`}>
-          <Archive size={20} strokeWidth={activeFilter === FilterType.READ ? 2.5 : 2} />
+        <button onClick={() => switchFilter(FilterType.READ)} className={`nav-touch flex flex-col items-center justify-center gap-1 h-full ${activeFilter === FilterType.READ ? 'text-[var(--accent-primary)]' : 'text-[var(--text-tertiary)]'}`}>
+          <Archive size={22} strokeWidth={activeFilter === FilterType.READ ? 2.5 : 1.5} />
+          <span className="text-[10px] font-medium">Archives</span>
         </button>
       </div>
     </nav>
@@ -315,7 +334,7 @@ const AppContent: React.FC = () => {
         )}
       </AppShell>
 
-      {isModalOpen && <AddLinkModal onAdd={handleAddLink} onClose={() => setIsModalOpen(false)} categories={categories} />}
+      {isModalOpen && <AddLinkModal onAdd={handleAddLink} onClose={() => { setIsModalOpen(false); setSharedUrl(null); }} categories={categories} initialUrl={sharedUrl} />}
       {isSettingsOpen && <SettingsModal onClose={() => setIsSettingsOpen(false)} />}
 
       <ConfirmModal

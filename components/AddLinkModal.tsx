@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Link2, Sparkles, ArrowRight, Check, Tag } from 'lucide-react';
 import { analyzeLink } from '../services/geminiService';
 import { GeminiAnalysis } from '../types';
@@ -7,27 +7,29 @@ interface AddLinkModalProps {
   onAdd: (linkData: any) => Promise<void>;
   onClose: () => void;
   categories: string[];
+  initialUrl?: string | null;
 }
 
-const AddLinkModal: React.FC<AddLinkModalProps> = ({ onAdd, onClose, categories }) => {
+const AddLinkModal: React.FC<AddLinkModalProps> = ({ onAdd, onClose, categories, initialUrl }) => {
   const [step, setStep] = useState<'input' | 'review'>('input');
-  const [url, setUrl] = useState('');
+  const [url, setUrl] = useState(initialUrl || '');
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState<GeminiAnalysis | null>(null);
 
-  // Form states for review
-  const [title, setTitle] = useState('');
-  const [summary, setSummary] = useState('');
-  const [category, setCategory] = useState('');
-  const [tags, setTags] = useState<string[]>([]);
-  const [newTag, setNewTag] = useState('');
+  // Auto-analyze if initialUrl is provided
+  useEffect(() => {
+    if (initialUrl) {
+      setUrl(initialUrl);
+      // Auto-trigger analysis
+      handleAnalyzeUrl(initialUrl);
+    }
+  }, [initialUrl]);
 
-  const handleAnalyze = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!url) return;
+  const handleAnalyzeUrl = async (urlToAnalyze: string) => {
+    if (!urlToAnalyze) return;
     setLoading(true);
 
-    const result = await analyzeLink(url, categories);
+    const result = await analyzeLink(urlToAnalyze, categories);
     setAnalysis(result);
 
     // Pre-fill form
@@ -38,6 +40,18 @@ const AddLinkModal: React.FC<AddLinkModalProps> = ({ onAdd, onClose, categories 
 
     setLoading(false);
     setStep('review');
+  };
+
+  // Form states for review
+  const [title, setTitle] = useState('');
+  const [summary, setSummary] = useState('');
+  const [category, setCategory] = useState('');
+  const [tags, setTags] = useState<string[]>([]);
+  const [newTag, setNewTag] = useState('');
+
+  const handleAnalyze = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await handleAnalyzeUrl(url);
   };
 
   const handleFinalSubmit = async () => {
