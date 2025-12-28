@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { LinkItem, FilterType, Theme } from './types';
 import { analyzeLink } from './services/geminiService';
-import { subscribeToLinks, addLinkRemote, updateLinkRemote, deleteLinkRemote } from './services/storageService';
+import { subscribeToLinks, addLinkRemote, updateLinkRemote, deleteLinkRemote, refreshLinks } from './services/storageService';
 import LinkCard from './components/LinkCard';
 import AddLinkModal from './components/AddLinkModal';
 import CategoryPills from './components/CategoryPills';
@@ -76,20 +76,17 @@ const AppContent: React.FC = () => {
     }
 
     try {
-      // Ensure all required fields are present
       const newLink = {
         ...linkData,
         isRead: false,
         createdAt: Date.now(),
       };
 
-      console.log("Saving link:", newLink);
       await addLinkRemote(user.id, newLink);
-      console.log("Link saved successfully");
 
-      if (isLocalMode) {
-        subscribeToLinks(user.id, (updated) => setLinks(updated));
-      }
+      // Force refresh to ensure UI updates immediately
+      const updated = await refreshLinks(user.id);
+      setLinks(updated);
     } catch (error) {
       console.error("Failed to save link:", error);
       alert(`Erreur lors de la sauvegarde: ${(error as any).message || error}`);
@@ -101,9 +98,8 @@ const AppContent: React.FC = () => {
     const link = links.find(l => l.id === id);
     if (link) {
       await updateLinkRemote(user.id, id, { isRead: !link.isRead });
-      if (isLocalMode) {
-        subscribeToLinks(user.id, (updated) => setLinks(updated));
-      }
+      const updated = await refreshLinks(user.id);
+      setLinks(updated);
     }
   };
 
@@ -117,10 +113,9 @@ const AppContent: React.FC = () => {
 
     await deleteLinkRemote(user.id, linkToDelete);
 
-    // For local mode updates
-    if (isLocalMode) {
-      subscribeToLinks(user.id, (updated) => setLinks(updated));
-    }
+    // Force refresh to ensure UI updates immediately
+    const updated = await refreshLinks(user.id);
+    setLinks(updated);
 
     setLinkToDelete(null);
     setIsDeleteModalOpen(false);
@@ -255,10 +250,10 @@ const AppContent: React.FC = () => {
   );
 
   const header = (
-    <header className="md:hidden sticky top-0 bg-[var(--bg-main)]/80 backdrop-blur-lg border-b border-[var(--border)] px-4 py-3 flex items-center justify-between">
+    <header className="md:hidden sticky top-0 bg-[var(--bg-main)]/80 backdrop-blur-lg border-b border-[var(--border)] px-4 py-3 pt-safe flex items-center justify-between z-40">
       <h1 className="font-bold text-lg tracking-tight">LinkShelf</h1>
-      <button onClick={() => setIsSettingsOpen(true)} className="p-2 -mr-2 text-[var(--text-secondary)]">
-        <Menu size={20} />
+      <button onClick={() => setIsSettingsOpen(true)} className="p-2 -mr-2 text-[var(--text-secondary)] active:scale-95 transition-transform">
+        <Menu size={22} />
       </button>
     </header>
   );

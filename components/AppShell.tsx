@@ -19,7 +19,7 @@ const AppShell: React.FC<AppShellProps> = ({ sidebar, children, mobileNav, heade
                 {header && <div className="md:hidden sticky top-0 z-30">{header}</div>}
 
                 {/* Scrollable Content */}
-                <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth p-4 md:p-8 lg:p-12 w-full max-w-[1600px] mx-auto">
+                <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth p-4 pb-28 md:p-8 md:pb-8 lg:p-12 w-full max-w-[1600px] mx-auto">
                     {children}
                 </main>
 

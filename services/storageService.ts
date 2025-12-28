@@ -78,6 +78,26 @@ export const subscribeToLinks = (userId: string, callback: (links: LinkItem[]) =
   };
 };
 
+// Manual refresh function (for when realtime doesn't trigger)
+export const refreshLinks = async (userId: string): Promise<LinkItem[]> => {
+  if (!isSupabaseConfigured) {
+    return getLocalLinks(userId);
+  }
+
+  const { data, error } = await supabase
+    .from(COLLECTION)
+    .select('*')
+    .eq('user_id', userId)
+    .order('createdat', { ascending: false });
+
+  if (error) {
+    console.error("Supabase fetch error:", error);
+    return getLocalLinks(userId);
+  }
+
+  return (data || []).map(mapRowToLinkItem);
+};
+
 export const addLinkRemote = async (userId: string, link: Omit<LinkItem, 'id'>) => {
   if (!isSupabaseConfigured) {
     const links = getLocalLinks(userId);
