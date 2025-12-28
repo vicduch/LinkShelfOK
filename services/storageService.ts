@@ -87,6 +87,7 @@ export const addLinkRemote = async (userId: string, link: Omit<LinkItem, 'id'>) 
     return data.id;
   } catch (e) {
     console.error("Error adding document to Supabase: ", e);
+    throw e;
   }
 };
 

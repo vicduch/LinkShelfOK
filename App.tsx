@@ -70,19 +70,29 @@ const AppContent: React.FC = () => {
   }, [user]);
 
   const handleAddLink = async (linkData: any) => {
-    if (!user) return;
+    if (!user) {
+      alert("Erreur: Vous devez être connecté pour sauvegarder un lien.");
+      return;
+    }
 
-    // Ensure all required fields are present
-    const newLink = {
-      ...linkData,
-      isRead: false,
-      createdAt: Date.now(),
-    };
+    try {
+      // Ensure all required fields are present
+      const newLink = {
+        ...linkData,
+        isRead: false,
+        createdAt: Date.now(),
+      };
 
-    await addLinkRemote(user.id, newLink);
+      console.log("Saving link:", newLink);
+      await addLinkRemote(user.id, newLink);
+      console.log("Link saved successfully");
 
-    if (isLocalMode) {
-      subscribeToLinks(user.id, (updated) => setLinks(updated));
+      if (isLocalMode) {
+        subscribeToLinks(user.id, (updated) => setLinks(updated));
+      }
+    } catch (error) {
+      console.error("Failed to save link:", error);
+      alert(`Erreur lors de la sauvegarde: ${(error as any).message || error}`);
     }
   };
 
