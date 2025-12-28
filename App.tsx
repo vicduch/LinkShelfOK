@@ -44,7 +44,7 @@ const AppContent: React.FC = () => {
   useEffect(() => {
     if (user) {
       setIsLoadingData(true);
-      const unsubscribe = subscribeToLinks(user.uid, (fetchedLinks) => {
+      const unsubscribe = subscribeToLinks(user.id, (fetchedLinks) => {
         setLinks(fetchedLinks);
         setIsLoadingData(false);
       });
@@ -64,10 +64,10 @@ const AppContent: React.FC = () => {
       createdAt: Date.now(),
     };
 
-    await addLinkRemote(user.uid, newLink);
+    await addLinkRemote(user.id, newLink);
 
     if (isLocalMode) {
-      subscribeToLinks(user.uid, (updated) => setLinks(updated));
+      subscribeToLinks(user.id, (updated) => setLinks(updated));
     }
   };
 
@@ -75,9 +75,9 @@ const AppContent: React.FC = () => {
     if (!user) return;
     const link = links.find(l => l.id === id);
     if (link) {
-      await updateLinkRemote(user.uid, id, { isRead: !link.isRead });
+      await updateLinkRemote(user.id, id, { isRead: !link.isRead });
       if (isLocalMode) {
-        subscribeToLinks(user.uid, (updated) => setLinks(updated));
+        subscribeToLinks(user.id, (updated) => setLinks(updated));
       }
     }
   };
@@ -90,11 +90,11 @@ const AppContent: React.FC = () => {
   const confirmDeleteLink = async () => {
     if (!user || !linkToDelete) return;
 
-    await deleteLinkRemote(user.uid, linkToDelete);
+    await deleteLinkRemote(user.id, linkToDelete);
 
     // For local mode updates
     if (isLocalMode) {
-      subscribeToLinks(user.uid, (updated) => setLinks(updated));
+      subscribeToLinks(user.id, (updated) => setLinks(updated));
     }
 
     setLinkToDelete(null);
