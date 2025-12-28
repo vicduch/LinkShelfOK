@@ -222,38 +222,41 @@ const AppContent: React.FC = () => {
   );
 
   const mobileNav = (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[var(--bg-main)]/95 backdrop-blur-xl border-t border-[var(--border)] pb-safe shadow-[0_-5px_20px_rgba(0,0,0,0.3)]">
-      <div className="grid grid-cols-5 h-20 items-center">
-        <button onClick={() => switchFilter(FilterType.UNREAD)} className={`nav-touch flex flex-col items-center justify-center gap-1 h-full ${activeFilter === FilterType.UNREAD ? 'text-[var(--accent-primary)]' : 'text-[var(--text-tertiary)]'}`}>
-          <Inbox size={22} strokeWidth={activeFilter === FilterType.UNREAD ? 2.5 : 1.5} />
-          <span className="text-[10px] font-medium">À lire</span>
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[var(--bg-surface)] border-t border-[var(--border)]" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
+      <div className="flex items-center justify-around h-16 px-2">
+        <button onClick={() => switchFilter(FilterType.UNREAD)} className={`flex flex-col items-center justify-center gap-0.5 w-16 py-2 rounded-lg transition-colors ${activeFilter === FilterType.UNREAD ? 'text-white' : 'text-[var(--text-tertiary)]'}`}>
+          <Inbox size={20} strokeWidth={activeFilter === FilterType.UNREAD ? 2.5 : 1.5} />
+          <span className="text-[9px] font-medium">À lire</span>
         </button>
-        <button onClick={() => switchFilter(FilterType.SOURCE)} className={`nav-touch flex flex-col items-center justify-center gap-1 h-full ${activeFilter === FilterType.SOURCE ? 'text-[var(--accent-primary)]' : 'text-[var(--text-tertiary)]'}`}>
-          <Globe size={22} strokeWidth={activeFilter === FilterType.SOURCE ? 2.5 : 1.5} />
-          <span className="text-[10px] font-medium">Sources</span>
+
+        <button onClick={() => switchFilter(FilterType.SOURCE)} className={`flex flex-col items-center justify-center gap-0.5 w-16 py-2 rounded-lg transition-colors ${activeFilter === FilterType.SOURCE ? 'text-white' : 'text-[var(--text-tertiary)]'}`}>
+          <Globe size={20} strokeWidth={activeFilter === FilterType.SOURCE ? 2.5 : 1.5} />
+          <span className="text-[9px] font-medium">Sources</span>
         </button>
-        <div className="flex items-center justify-center -mt-6">
-          <button onClick={() => setIsModalOpen(true)} className="w-14 h-14 rounded-full bg-[var(--text-primary)] text-[var(--bg-main)] flex items-center justify-center transition-transform active:scale-95 shadow-xl shadow-white/10">
-            <Plus size={26} strokeWidth={2.5} />
-          </button>
-        </div>
-        <button onClick={() => switchFilter(FilterType.CATEGORY)} className={`nav-touch flex flex-col items-center justify-center gap-1 h-full ${activeFilter === FilterType.CATEGORY ? 'text-[var(--accent-primary)]' : 'text-[var(--text-tertiary)]'}`}>
-          <Layers size={22} strokeWidth={activeFilter === FilterType.CATEGORY ? 2.5 : 1.5} />
-          <span className="text-[10px] font-medium">Catégories</span>
+
+        {/* Central Add Button - Floating */}
+        <button onClick={() => setIsModalOpen(true)} className="w-12 h-12 -mt-8 rounded-full bg-white text-black flex items-center justify-center shadow-lg shadow-black/30 active:scale-95 transition-transform">
+          <Plus size={24} strokeWidth={2.5} />
         </button>
-        <button onClick={() => switchFilter(FilterType.READ)} className={`nav-touch flex flex-col items-center justify-center gap-1 h-full ${activeFilter === FilterType.READ ? 'text-[var(--accent-primary)]' : 'text-[var(--text-tertiary)]'}`}>
-          <Archive size={22} strokeWidth={activeFilter === FilterType.READ ? 2.5 : 1.5} />
-          <span className="text-[10px] font-medium">Archives</span>
+
+        <button onClick={() => switchFilter(FilterType.CATEGORY)} className={`flex flex-col items-center justify-center gap-0.5 w-16 py-2 rounded-lg transition-colors ${activeFilter === FilterType.CATEGORY ? 'text-white' : 'text-[var(--text-tertiary)]'}`}>
+          <Layers size={20} strokeWidth={activeFilter === FilterType.CATEGORY ? 2.5 : 1.5} />
+          <span className="text-[9px] font-medium">Tags</span>
+        </button>
+
+        <button onClick={() => switchFilter(FilterType.READ)} className={`flex flex-col items-center justify-center gap-0.5 w-16 py-2 rounded-lg transition-colors ${activeFilter === FilterType.READ ? 'text-white' : 'text-[var(--text-tertiary)]'}`}>
+          <Archive size={20} strokeWidth={activeFilter === FilterType.READ ? 2.5 : 1.5} />
+          <span className="text-[9px] font-medium">Lu</span>
         </button>
       </div>
     </nav>
   );
 
   const header = (
-    <header className="md:hidden sticky top-0 bg-[var(--bg-main)]/80 backdrop-blur-lg border-b border-[var(--border)] px-4 py-3 pt-safe flex items-center justify-between z-40">
-      <h1 className="font-bold text-lg tracking-tight">LinkShelf</h1>
-      <button onClick={() => setIsSettingsOpen(true)} className="p-2 -mr-2 text-[var(--text-secondary)] active:scale-95 transition-transform">
-        <Menu size={22} />
+    <header className="md:hidden bg-[var(--bg-main)] border-b border-[var(--border)] px-4 py-4 flex items-center justify-between" style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 12px)' }}>
+      <h1 className="font-bold text-xl tracking-tight">LinkShelf</h1>
+      <button onClick={() => setIsSettingsOpen(true)} className="w-10 h-10 flex items-center justify-center rounded-full bg-[var(--bg-surface)] text-[var(--text-secondary)] active:scale-95 transition-transform">
+        <Menu size={20} />
       </button>
     </header>
   );

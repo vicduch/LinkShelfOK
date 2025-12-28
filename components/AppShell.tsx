@@ -9,21 +9,25 @@ interface AppShellProps {
 
 const AppShell: React.FC<AppShellProps> = ({ sidebar, children, mobileNav, header }) => {
     return (
-        <div className="flex min-h-screen bg-[var(--bg-main)] text-[var(--text-primary)] antialiased selection:bg-[var(--accent-primary)] selection:text-white">
-            {/* Sidebar - Desktop */}
-            {sidebar}
+        <div className="flex min-h-screen bg-[var(--bg-main)] text-[var(--text-primary)] antialiased">
+            {/* Sidebar - Desktop only */}
+            <div className="hidden md:block">
+                {sidebar}
+            </div>
 
             {/* Main Content Area */}
-            <div className="flex-1 flex flex-col h-screen overflow-hidden relative">
+            <div className="flex-1 flex flex-col min-h-screen w-full">
                 {/* Mobile Header */}
-                {header && <div className="md:hidden sticky top-0 z-30">{header}</div>}
+                {header}
 
                 {/* Scrollable Content */}
-                <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth p-4 pb-28 md:p-8 md:pb-8 lg:p-12 w-full max-w-[1600px] mx-auto">
-                    {children}
+                <main className="flex-1 overflow-y-auto p-4 pb-24 md:p-8 md:pb-8 lg:p-12">
+                    <div className="w-full max-w-[1200px] mx-auto">
+                        {children}
+                    </div>
                 </main>
 
-                {/* Mobile Nav */}
+                {/* Mobile Nav - Fixed at bottom */}
                 {mobileNav}
             </div>
         </div>
