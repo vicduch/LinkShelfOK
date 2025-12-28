@@ -91,7 +91,7 @@ const AddLinkModal: React.FC<AddLinkModalProps> = ({ onAdd, onClose, categories,
       />
 
       <div className="relative w-full max-w-lg glass-panel rounded-3xl shadow-2xl p-1 overflow-hidden animate-luxe-fade">
-        <div className="bg-[var(--bg-secondary)]/95 p-8 rounded-[22px] max-h-[85vh] overflow-y-auto no-scrollbar">
+        <div className="bg-[var(--bg-secondary)]/95 p-5 md:p-8 rounded-[22px] max-h-[85vh] overflow-y-auto no-scrollbar">
 
           {/* Header */}
           <div className="flex justify-between items-start mb-6">

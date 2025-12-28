@@ -26,7 +26,7 @@ const LinkCard: React.FC<LinkCardProps> = ({ link, onToggleRead, onDelete }) => 
           </div>
         </div>
 
-        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        <div className="flex gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
           <button
             onClick={(e) => { e.preventDefault(); onToggleRead(link.id); }}
             className={`p-2 rounded-full hover:bg-white/10 transition-all ${link.isRead ? 'text-amber-500/80' : 'text-blue-400/80'}`}

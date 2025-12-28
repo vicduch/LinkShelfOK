@@ -19,7 +19,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
         onClick={onClose}
       />
 
-      <div className="relative w-full max-w-sm glass-panel rounded-[var(--radius-xl)] shadow-2xl p-8 animate-in zoom-in-95 duration-200 border-t border-white/10">
+      <div className="relative w-full max-w-sm glass-panel rounded-[var(--radius-xl)] shadow-2xl p-6 animate-in zoom-in-95 duration-200 border-t border-white/10">
 
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-xl font-bold text-[var(--text-primary)]">Compte</h2>
