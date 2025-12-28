@@ -400,16 +400,27 @@ button {
     display: none;
 }
 
-.md\:flex {
-    display: flex;
+/* Responsive utilities - fix for mobile */
+/* md breakpoint = 768px */
+@media (min-width: 768px) {
+    .md\:flex {
+        display: flex !important;
+    }
+
+    .md\:hidden {
+        display: none !important;
+    }
+
+    .md\:block {
+        display: block !important;
+    }
 }
 
-.md\:hidden {
-    display: none;
-}
-
-.md\:block {
-    display: block;
+/* On mobile (below md), md:hidden elements should be visible */
+@media (max-width: 767px) {
+    .md\:hidden {
+        display: flex !important;
+    }
 }
 
 .sticky {
