@@ -17,6 +17,19 @@ const saveLocalLinks = (userId: string, links: LinkItem[]) => {
 
 // --- REMOTE STORAGE LOGIC ---
 
+// Helper to map DB row (snake_case) to LinkItem (camelCase)
+const mapRowToLinkItem = (row: any): LinkItem => ({
+  id: row.id,
+  user_id: row.user_id,
+  url: row.url,
+  title: row.title,
+  summary: row.summary,
+  category: row.category,
+  tags: row.tags,
+  isRead: row.isread, // Map lowercase from DB
+  createdAt: row.createdat // Map lowercase from DB
+});
+
 // Real-time subscription to links
 export const subscribeToLinks = (userId: string, callback: (links: LinkItem[]) => void) => {
   if (!isSupabaseConfigured) {
@@ -30,13 +43,14 @@ export const subscribeToLinks = (userId: string, callback: (links: LinkItem[]) =
       .from(COLLECTION)
       .select('*')
       .eq('user_id', userId)
-      .order('createdAt', { ascending: false });
+      .order('createdat', { ascending: false }); // Use DB column name
 
     if (error) {
       console.error("Supabase fetch error:", error);
       callback(getLocalLinks(userId));
     } else {
-      callback(data as LinkItem[]);
+      const mappedLinks = (data || []).map(mapRowToLinkItem);
+      callback(mappedLinks);
     }
   };
 
@@ -74,7 +88,7 @@ export const addLinkRemote = async (userId: string, link: Omit<LinkItem, 'id'>) 
   }
 
   try {
-    // Explicit mapping to match the SQL schema exactly (handling case sensitivity)
+    // Explicit mapping to match the SQL schema exactly (lowercase keys for PostgreSQL)
     const { data, error } = await supabase
       .from(COLLECTION)
       .insert([{
@@ -84,8 +98,8 @@ export const addLinkRemote = async (userId: string, link: Omit<LinkItem, 'id'>) 
         summary: link.summary,
         category: link.category,
         tags: link.tags,
-        isRead: link.isRead,
-        createdAt: link.createdAt
+        isread: link.isRead,       // lowercase key
+        createdat: link.createdAt  // lowercase key
       }])
       .select()
       .single();
@@ -109,9 +123,10 @@ export const updateLinkRemote = async (userId: string, linkId: string, updates: 
     return;
   }
 
-  // Map updates if they use camelCase but DB expects exact match
+  // Map updates: Camel -> Snake/Lowercase
   const dbUpdates: any = {};
-  if (updates.isRead !== undefined) dbUpdates.isRead = updates.isRead;
+  if (updates.isRead !== undefined) dbUpdates.isread = updates.isRead;
+  if (updates.createdAt !== undefined) dbUpdates.createdat = updates.createdAt;
   if (updates.title) dbUpdates.title = updates.title;
   if (updates.summary) dbUpdates.summary = updates.summary;
   if (updates.category) dbUpdates.category = updates.category;
