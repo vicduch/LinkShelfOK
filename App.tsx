@@ -223,7 +223,7 @@ const AppContent: React.FC = () => {
 
   const mobileNav = (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-[100] bg-[var(--bg-surface)] border-t border-[var(--border)]" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
-      <div className="flex items-center justify-around h-16 px-2">
+      <div className="flex items-center justify-around h-16 px-2 w-full">
         <button onClick={() => switchFilter(FilterType.UNREAD)} className={`flex flex-col items-center justify-center gap-0.5 w-16 py-2 rounded-lg transition-colors ${activeFilter === FilterType.UNREAD ? 'text-white' : 'text-[var(--text-tertiary)]'}`}>
           <Inbox size={20} strokeWidth={activeFilter === FilterType.UNREAD ? 2.5 : 1.5} />
           <span className="text-[9px] font-medium">À lire</span>

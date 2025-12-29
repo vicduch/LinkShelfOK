@@ -443,6 +443,10 @@ button {
     right: 0;
 }
 
+.w-full {
+    width: 100%;
+}
+
 .z-50 {
     z-index: 50;
 }
